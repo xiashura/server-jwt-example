@@ -1,24 +1,109 @@
-frontend
-create super key for jwt token
-method to create and use database docker mysql postgrest mongodb 
-public github
-monotring service 
+# server jwt example
 
-test
-HTTP 
 
-curl -X POST  http://0.0.0.0:8080/authentication  \
--H 'Content-Type: application/json' \
--H 'Authorization:token'
+## request
+```curl
+curl --location --request GET 'http://0.0.0.0:8080/Registration' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "User":{
+        "Email":"Email",
+        "Name":"NAme",
+        "Password":"Password"
+    }
+}'
 
-curl -X GET  http://0.0.0.0:8080/authentication  \
--H 'Content-Type: application/json' \
--H 'Name: test_user' \               
--H 'Email:test@mail.com'\    
--H 'Password:12123123ee'\
-     
-curl -X POST  http://0.0.0.0:8080/registration  \
--H 'Content-Type: application/json' \
--H 'Name: test_user'  \
--H 'Email:test@mail.com' \
--H 'Password:12123123ee'
+output:{
+    "Token": {
+        "Time": "2020-07-18T00:21:23.371367012+05:00",
+        "Key": "youtoken"
+    }
+}
+```
+
+```console
+curl --location --request GET 'http://0.0.0.0:8080/Authentication' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "User":{
+        "Email":"Email",
+        "Name":"NAme",
+        "Password":"Password"
+    },
+    "Token": {
+        "Time": "2020-07-17T06:02:23.585851813+05:00",
+        "Key": "youtoken
+    }
+    
+}'
+
+output:{
+    "client": {
+        "User": {
+            "Email": "Email",
+            "Name": "NAme",
+            "Password": "Password"
+        },
+        "Token": {
+            "Time": "2020-07-17T06:02:23.585851813+05:00",
+            "Authorized": true,
+            "Key": "youtoken"
+        }
+    }
+}
+```
+
+```console
+curl --location --request GET 'http://0.0.0.0:8080/Unauthenticated' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+
+        "User": {
+            "Email": "Email",
+            "Name": "NAme",
+            "Password": "Password"
+        },
+        "Token": {
+            "Time": "2020-07-17T06:02:23.585851813+05:00",
+            "Authorized": true,
+            "Key": "youtoken"
+        }
+    }'
+output:{
+    "client": {
+        "User": {
+            "Email": "Email",
+            "Name": "NAme",
+            "Password": "Password"
+        },
+        "Token": {
+            "Time": "2020-07-17T06:02:23.585851813+05:00",
+            "Key": "youtoken"
+        }
+    }
+}
+```
+```console
+curl --location --request GET 'http://0.0.0.0:8080/Expired' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+
+    "User": {
+        "Email": "Email",
+        "Name": "NAme",
+        "Password": "Password"
+    },
+        "Token": {
+            "Time": "2020-07-17T06:02:23.585851813+05:00",
+            "Authorized": true,
+            "Key": "youtoken"
+    }
+}'
+output:{
+    "Token": {
+        "Time": "2020-07-17T06:02:23.585851813+05:00",
+        "Authorized": true,
+        "Key": "youtoken"
+    }
+}
+```
