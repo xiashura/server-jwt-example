@@ -21,7 +21,7 @@ output:{
 }
 ```
 
-```console
+```curl
 curl --location --request GET 'http://0.0.0.0:8080/Authentication' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -53,7 +53,7 @@ output:{
 }
 ```
 
-```console
+```curl
 curl --location --request GET 'http://0.0.0.0:8080/Unauthenticated' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -83,7 +83,7 @@ output:{
     }
 }
 ```
-```console
+```curl
 curl --location --request GET 'http://0.0.0.0:8080/Expired' \
 --header 'Content-Type: application/json' \
 --data-raw '{
