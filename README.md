@@ -1,5 +1,14 @@
 # server jwt example
 
+install 
+```
+ go mod download
+```
+
+run 
+```bash 
+go run main.go
+```
 
 ## request
 ```curl
