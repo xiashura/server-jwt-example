@@ -1,10 +1,9 @@
 package main
 
 import (
-	"github.com/server-jwt-exmple/middleware"
-	"github.com/server-jwt-exmple/model"
-
 	"github.com/gin-gonic/gin"
+	"github.com/xiashura/server-jwt-exmple/middleware"
+	"github.com/xiashura/server-jwt-exmple/model"
 )
 
 func main() {
