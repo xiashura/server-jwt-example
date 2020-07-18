@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/server-jwt-exmple/model"
+	"github.com/xiashura/server-jwt-exmple/model"
 )
 
 //Client модель клиента
