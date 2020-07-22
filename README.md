@@ -7,7 +7,12 @@ install
 
 run 
 ```bash 
-go run main.go
+go run cmd/service/authentication/main.go
+```
+
+Docker 
+```bash
+docker-compose up -d
 ```
 
 ## request
