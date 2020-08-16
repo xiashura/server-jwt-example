@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package api;
+
+service Auth {
+	rpc	Registration(UserRequest) returns(JwtResponse){}
+	rpc	Authentication(JwtRequest) returns(JwtResponse){}
+	rpc	Unauthenticated(JwtRequest) returns(JwtResponse){}
+	rpc	Expired(JwtRequest) returns(JwtResponse){}
+}
+
+
+message UserRequest {
+	string email  = 1;
+	string name  = 2;
+	string password  = 3;
+}
+
+message JwtRequest {
+	int64 time = 1;
+	bool authorized = 2;
+	string key = 3;
+}
+
+message JwtResponse {	
+	int64 time = 1;
+	bool authorized = 2;
+	string key = 3;
+}
