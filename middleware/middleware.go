@@ -1,101 +1,55 @@
 package middleware
 
 import (
-	"os"
-	"time"
+	"encoding/json"
+	"fmt"
+	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
-	"github.com/xiashura/server-jwt-exmple/model"
+	"github.com/xiashura/server-jwt-example/pkg/jwt"
 )
 
-//Client модель клиента
-type Client model.Client
+func Authentication(next http.HandlerFunc) http.HandlerFunc {
 
-//Valid Проверка токена на валидность
-func (client Client) Valid() error {
-	tokenString := client.Token.Key
-	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("API_SECRET")), nil
-	})
-	return err
-}
+	return func(w http.ResponseWriter, r *http.Request) {
 
-//Generate создание токена
-func (client Client) Generate() (string, error) {
+		var a jwt.Client
 
-	claims := jwt.MapClaims{}
-	claims["Authorized"] = client.Token.Authorized
-	claims["User"] = client.User
-	claims["exp"] = time.Now().Add(time.Hour*24).Unix() - client.Token.Time.Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
-
-}
-
-//Registration регистрация пользователся
-func Registration(client Client) model.Token {
-	token, err := client.Generate()
-	if err != nil {
-		return model.Token{}
-	}
-	return model.Token{
-		Key:        token,
-		Authorized: false,
-		Time:       time.Now().Add(time.Hour * 24),
-	}
-}
-
-//Authentication авторизация пользователя
-func Authentication(client Client) model.Client {
-	if err := client.Valid(); err != nil {
-		return model.Client{}
-	}
-	_, err := client.Generate()
-	if err != nil {
-		return model.Client{}
-	}
-	return model.Client{
-		User: client.User,
-		Token: model.Token{
-			Key:        client.Token.Key,
-			Time:       client.Token.Time,
-			Authorized: true,
-		},
-	}
-}
-
-//Unauthenticated выход из приложения
-func Unauthenticated(client Client) model.Client {
-	if err := client.Valid(); err != nil {
-		return model.Client{}
-	}
-	_, err := client.Generate()
-	if err != nil {
-		return model.Client{}
-	}
-	return model.Client{
-		User: client.User,
-		Token: model.Token{
-			Key:        client.Token.Key,
-			Time:       client.Token.Time,
-			Authorized: false,
-		},
-	}
-}
-
-//Expired проверка на время токена
-func Expired(client Client) model.Token {
-	if client.Token.Time.Unix() < time.Now().Add(time.Second).Unix() {
-		token, err := client.Generate()
+		err := json.NewDecoder(r.Body).Decode(&a)
 		if err != nil {
-			return client.Token
+
+			fmt.Println("work")
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
-		return model.Token{
-			Authorized: client.Token.Authorized,
-			Time:       time.Now().Add(time.Hour * 24),
-			Key:        token,
+		err = a.Valid()
+		if err != nil {
+			fmt.Println("work")
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
+
+		next(w, r)
 	}
-	return client.Token
+
+}
+
+func Mymiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var a jwt.Client
+
+		err := json.NewDecoder(r.Body).Decode(&a)
+
+		if err != nil {
+			fmt.Println("work")
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		token := jwt.Registration(a)
+
+		res, _ := json.Marshal(token)
+
+		w.Write(res)
+		next(w, r)
+	}
 }
