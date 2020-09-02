@@ -1,53 +1,27 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/xiashura/server-jwt-exmple/middleware"
-	"github.com/xiashura/server-jwt-exmple/model"
+	"fmt"
+	"net/http"
+
+	"github.com/xiashura/server-jwt-example/middleware"
 )
 
-func main() {
-	r := gin.Default()
-	r.GET("/Registration", func(c *gin.Context) {
-		var client middleware.Client
-		c.BindJSON(&client)
-		token := middleware.Registration(client)
-		c.JSON(200, gin.H{
-			"Token": model.Token{
-				Key:        token.Key,
-				Time:       token.Time,
-				Authorized: token.Authorized,
-			},
-		})
-	})
-	r.GET("/Authentication", func(c *gin.Context) {
-		var client middleware.Client
-		c.BindJSON(&client)
-		token := middleware.Authentication(client)
-		c.JSON(200, gin.H{
-			"client": token,
-		})
-	})
-	r.GET("/Unauthenticated", func(c *gin.Context) {
-		var client middleware.Client
-		c.BindJSON(&client)
-		token := middleware.Unauthenticated(client)
-		c.JSON(200, gin.H{
-			"client": token,
-		})
-	})
-	r.GET("/Expired", func(c *gin.Context) {
+func myHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "<h1>Home</h1>")
+}
 
-		var client middleware.Client
-		c.BindJSON(&client)
-		token := middleware.Expired(client)
-		c.JSON(200, gin.H{
-			"Token": model.Token{
-				Key:        token.Key,
-				Time:       token.Time,
-				Authorized: token.Authorized,
-			},
-		})
-	})
-	r.Run()
+func myRegistration(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "<h1>Registration</h1>")
+}
+
+func main() {
+	http.HandleFunc("/", middleware.Authentication(myHandler))
+	http.HandleFunc("/Registration", middleware.Registration(myRegistration))
+	http.HandleFunc("/Authentication", middleware.Authentication(myHandler))
+	http.HandleFunc("/Unauthenticated", middleware.Authentication(myHandler))
+	http.HandleFunc("/Expired", middleware.Authentication(myHandler))
+	http.ListenAndServe(":8080", nil)
 }
