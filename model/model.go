@@ -1,23 +1,19 @@
 package model
 
-import "time"
+import (
+	"time"
+)
 
 //User модель пользователя
 type User struct {
-	Email    string `json:"Email,omitempty"`
-	Name     string `json:"Name,omitempty"`
-	Password string `json:"Password,omitempty"`
-}
-
-//Client модель клиента
-type Client struct {
-	User  User  `json:"User,omitempty"`
-	Token Token `json:"Token,omitempty"`
+	Email      string    `json:"Email,omitempty"`
+	Name       string    `json:"Name,omitempty"`
+	Password   string    `json:"Password,omitempty"`
+	Authorized bool      `json:"Authorized,omitempty"`
+	Time       time.Time `json:"Time,omitempty"`
 }
 
 //Token модель токена
 type Token struct {
-	Time       time.Time `json:"Time,omitempty"`
-	Authorized bool      `json:"Authorized,omitempty"`
-	Key        string    `json:"Key,omitempty"`
+	Key string `json:"Key,omitempty"`
 }
