@@ -1,22 +1,34 @@
 package jwt
 
 import (
+	"log"
 	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/joho/godotenv"
 	"github.com/xiashura/server-jwt-example/model"
 )
 
 //Client модель клиента
-type Client model.Client
+type Client struct {
+	User  model.User
+	Token model.Token
+}
 
 //Valid Проверка токена на валидность
 func (client Client) Valid() error {
+
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	tokenString := client.Token.Key
 	claims := jwt.MapClaims{}
-	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		return []byte(os.Getenv("API_SECRET")), nil
+	_, err = jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWTPASS")), nil
 	})
 	return err
 }
@@ -24,13 +36,18 @@ func (client Client) Valid() error {
 //Generate создание токена
 func (client Client) Generate() (string, error) {
 
-	claims := jwt.MapClaims{}
-	claims["Authorized"] = client.Token.Authorized
-	claims["User"] = client.User
-	claims["exp"] = time.Now().Add(time.Hour*24).Unix() - client.Token.Time.Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(os.Getenv("API_SECRET")))
+	err := godotenv.Load()
 
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	claims := jwt.MapClaims{}
+	claims["Authorized"] = client.User.Authorized
+	claims["User"] = client.User
+	claims["exp"] = time.Now().Add(time.Hour * 24).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv("JWTPASS")))
 }
 
 //Registration регистрация пользователся
@@ -40,61 +57,44 @@ func Registration(client Client) model.Token {
 		return model.Token{}
 	}
 	return model.Token{
-		Key:        token,
-		Authorized: false,
-		Time:       time.Now().Add(time.Hour * 24),
+		Key: token,
 	}
 }
 
 //Authentication авторизация пользователя
-func Authentication(client Client) model.Client {
+func Authentication(client Client) model.User {
 	if err := client.Valid(); err != nil {
-		return model.Client{}
+		return model.User{}
 	}
 	_, err := client.Generate()
 	if err != nil {
-		return model.Client{}
+		return model.User{}
 	}
-	return model.Client{
-		User: client.User,
-		Token: model.Token{
-			Key:        client.Token.Key,
-			Time:       client.Token.Time,
-			Authorized: true,
-		},
-	}
+
+	///aaaa
+	return model.User{}
 }
 
 //Unauthenticated выход из приложения
-func Unauthenticated(client Client) model.Client {
+func Unauthenticated(client Client) model.User {
 	if err := client.Valid(); err != nil {
-		return model.Client{}
+		return model.User{}
 	}
 	_, err := client.Generate()
 	if err != nil {
-		return model.Client{}
+		return model.User{}
 	}
-	return model.Client{
-		User: client.User,
-		Token: model.Token{
-			Key:        client.Token.Key,
-			Time:       client.Token.Time,
-			Authorized: false,
-		},
-	}
+	return model.User{}
 }
 
-//Expired проверка на время токена
 func Expired(client Client) model.Token {
-	if client.Token.Time.Unix() < time.Now().Add(time.Second).Unix() {
+	if client.User.Time.Unix() < time.Now().Add(time.Second).Unix() {
 		token, err := client.Generate()
 		if err != nil {
-			return client.Token
+			return model.Token{}
 		}
 		return model.Token{
-			Authorized: client.Token.Authorized,
-			Time:       time.Now().Add(time.Hour * 24),
-			Key:        token,
+			Key: token,
 		}
 	}
 	return client.Token
