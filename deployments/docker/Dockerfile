@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -o app cmd/service/images/main.go
+RUN go build -o app cmd/service/authentication/main.go
 
 EXPOSE 8080
 
