@@ -15,5 +15,6 @@ type User struct {
 
 //Token модель токена
 type Token struct {
-	Key string `json:"Key,omitempty"`
+	Access  string `json:"Access,omitempty"`
+	Refresh string `json:"Refresh,omitempty"`
 }
