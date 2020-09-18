@@ -10,7 +10,7 @@ type User struct {
 	Email      string             `bson:"Email,omitempty" json:"Email,omitempty"`
 	Name       string             `bson:"Name,omitempty" json:"Name,omitempty"`
 	Password   string             `bson:"Password,omitempty" json:"Password,omitempty"`
-	HashTokens []string           `bson:"HashTokens,omitempty" json:"Token,omitempty"`
+	HashTokens []string           `bson:"HashTokens,omitempty" json:"HashTokens,omitempty"`
 	Authorized bool               `bson:"Authorized,omitempty" json:"Authorized,omitempty"`
 }
 
