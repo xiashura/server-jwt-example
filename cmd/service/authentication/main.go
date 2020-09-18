@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/xiashura/server-jwt-example/internal/app/middleware"
 )
@@ -35,5 +36,5 @@ func main() {
 	http.HandleFunc("/api/v3/Refresh/delete/one", middleware.DeleteRefreshToken(myHandler))
 	http.HandleFunc("/api/v3/Refresh/delete/many", middleware.DeleteRefreshTokenUser(myHandler))
 
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(":"+os.Getenv("PORT"), nil)
 }
