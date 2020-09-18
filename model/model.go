@@ -1,16 +1,17 @@
 package model
 
 import (
-	"time"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 //User модель пользователя
 type User struct {
-	Email      string    `json:"Email,omitempty"`
-	Name       string    `json:"Name,omitempty"`
-	Password   string    `json:"Password,omitempty"`
-	Authorized bool      `json:"Authorized,omitempty"`
-	Time       time.Time `json:"Time,omitempty"`
+	ID         primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
+	Email      string             `bson:"Email,omitempty" json:"Email,omitempty"`
+	Name       string             `bson:"Name,omitempty" json:"Name,omitempty"`
+	Password   string             `bson:"Password,omitempty" json:"Password,omitempty"`
+	HashTokens []string           `bson:"HashTokens,omitempty" json:"Token,omitempty"`
+	Authorized bool               `bson:"Authorized,omitempty" json:"Authorized,omitempty"`
 }
 
 //Token модель токена
