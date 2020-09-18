@@ -1,27 +1,12 @@
 # server jwt example heroku
 
-install 
-```bash
- go mod download
-```
-
-run 
-```bash 
-go run cmd/service/authentication/main.go
-```
-
-Docker 
-```bash
-docker-compose up -d
-```
-
 ## request
 ```curl
-curl --location --request GET '127.0.0.1:8080/Registration' \
+curl --location --request GET 'https://server-jwt-example.herokuapp.com/api/v1/Registration' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "Email":"asddasad",
-    "Name":"asda",
+    "Email":"Test@aaaa.aaa",
+    "Name":"11111",
     "Password":"asdsad",
     "Authorized":false
 }    
@@ -30,46 +15,82 @@ curl --location --request GET '127.0.0.1:8080/Registration' \
 ## response
 ```
 {
-    "Key": "youtoken"
+    "Access": "token",
+    "Refresh": "token"
 }
 ```
 
 ## request
 ```curl
-curl --location --request GET '127.0.0.1:8080/Authentication' \
+curl --location --request GET 'https://server-jwt-example.herokuapp.com/api/v1/Authentication' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "Key": "youtoken"
-}'
-
+    "Access": "token",
+    "Refresh": "token"
+}
+'
 ```
 ## response
 ```
-<h1>Home</h1>
-```
-
-## request
-```
-curl --location --request GET '127.0.0.1:8080/Unauthenticated' \
---header 'Content-Type: application/json' \
---data-raw '{
-    "Key": "youtoken"
-}'
-```
-## response
-```
-<h1>Home</h1>
+<h1>Auth</h1>
 ```
 
 ## request
 ```
-curl --location --request GET '127.0.0.1:8080/Expired' \
+curl --location --request GET 'https://server-jwt-example.herokuapp.com/api/v2/Updatetoken' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "Key": "youtoken"
-}'
+    "Email":"Test@aaaa.aaa",
+    "Name":"11111",
+    "Password":"asdsad",
+    "Authorized":false
+}    
+'
 ```
 ## response
 ```
-<h1>Home</h1>
+{
+    "Access": "token",
+    "Refresh": "token"
+}
+```
+
+## request
+```
+curl --location --request GET 'https://server-jwt-example.herokuapp.com/api/v3/Refresh/delete/one' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "Access": "token",
+    "Refresh": "token"
+}''
+```
+## response
+```
+{
+    "MatchedCount": 1,
+    "ModifiedCount": 1,
+    "UpsertedCount": 0,
+    "UpsertedID": null
+}
+```
+## request
+```
+curl --location --request GET 'https://server-jwt-example.herokuapp.com/api/v3/Refresh/delete/many' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "Email":"Test@aaaa.aaa",
+    "Name":"11111",
+    "Password":"asdsad",
+    "Authorized":false
+}    
+'
+```
+## response
+```
+{
+    "MatchedCount": 1,
+    "ModifiedCount": 1,
+    "UpsertedCount": 0,
+    "UpsertedID": null
+}
 ```
