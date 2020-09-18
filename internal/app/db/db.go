@@ -22,7 +22,7 @@ type Data struct {
 //Auth_db подключение к базе данных
 func (d Data) Auth_db() (*mongo.Client, error) {
 
-	clientOptions := options.Client().ApplyURI("mongodb://admin:root@172.20.0.4:27017/?authSource=admin")
+	clientOptions := options.Client().ApplyURI("mongodb+srv://plexxxanov:aXQA8skfqNLjIj6I@cluster0.efpzs.gcp.mongodb.net/test?retryWrites=true&w=majority")
 
 	client, err := mongo.Connect(ctx.TODO(), clientOptions)
 
