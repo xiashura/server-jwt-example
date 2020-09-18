@@ -1,4 +1,4 @@
-# server jwt example
+# server jwt example heroku
 
 install 
 ```bash
