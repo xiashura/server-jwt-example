@@ -4,24 +4,36 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/xiashura/server-jwt-example/middleware"
+	"github.com/xiashura/server-jwt-example/internal/app/middleware"
 )
 
 func myHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "<h1>Home</h1>")
 }
 
 func myRegistration(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
+}
+
+func myUpdate(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+
 	fmt.Fprintf(w, "<h1>Registration</h1>")
+}
+func MyDeleteRefresh(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "<h1>DeleteRefresh</h1>")
 }
 
 func main() {
-	http.HandleFunc("/", middleware.Authentication(myHandler))
-	http.HandleFunc("/Registration", middleware.Registration(myRegistration))
-	http.HandleFunc("/Authentication", middleware.Authentication(myHandler))
-	http.HandleFunc("/Unauthenticated", middleware.Authentication(myHandler))
-	http.HandleFunc("/Expired", middleware.Authentication(myHandler))
+
+	http.HandleFunc("/api/v1/Registration", middleware.Registration(myRegistration))
+	http.HandleFunc("/api/v1/Authentication", middleware.Authentication(myHandler))
+
+	http.HandleFunc("/api/v2/Updatetoken", middleware.UpDateToken(myUpdate))
+
+	http.HandleFunc("/api/v3/Refresh/delete/one", middleware.DeleteRefreshToken(myHandler))
+	http.HandleFunc("/api/v3/Refresh/delete/many", middleware.DeleteRefreshTokenUser(myHandler))
+
 	http.ListenAndServe(":8080", nil)
 }
