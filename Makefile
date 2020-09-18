@@ -1,7 +1,6 @@
 install:
 	go mod download 
 
-
 build:
 	go build -o app cmd/service/authentication/main.go
 	./app
@@ -9,5 +8,5 @@ build:
 run:
 	go run app cmd/service/authentication/main.go
 
-docker:
+docker_up:
 	docker-compose -f deployments/docker-compose/docker-compose.yml  up -d
